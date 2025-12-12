@@ -16,10 +16,14 @@ COPY pyproject.toml .
 COPY poetry.lock .
 COPY README.md .
 COPY mem0 ./mem0
-RUN pip install -e .[graph]
+RUN pip install -e ".[graph,vector_stores]"
+RUN pip install ollama
 
 # Return to app directory and copy server code
 WORKDIR /app
 COPY server .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Install ollama
+# RUN ./ollama.sh
+
+# ENTRYPOINT ["./entrypoint.sh"]

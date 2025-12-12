@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from mem0 import Memory
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Load environment variables
 load_dotenv()
@@ -44,14 +44,32 @@ DEFAULT_CONFIG = {
             "user": POSTGRES_USER,
             "password": POSTGRES_PASSWORD,
             "collection_name": POSTGRES_COLLECTION_NAME,
+            "embedding_model_dims": 768,
         },
     },
     "graph_store": {
         "provider": "neo4j",
         "config": {"url": NEO4J_URI, "username": NEO4J_USERNAME, "password": NEO4J_PASSWORD},
     },
-    "llm": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "temperature": 0.2, "model": "gpt-4.1-nano-2025-04-14"}},
-    "embedder": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "model": "text-embedding-3-small"}},
+    # "llm": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "temperature": 0.2, "model": "gpt-4.1-nano-2025-04-14"}},
+    "llm": {
+        "provider": "ollama",
+        "config": {
+            "temperature": 0.0,
+            "model": "qwen3",
+            "max_tokens": 2000,
+            "ollama_base_url": "http://ollama:11434"
+        }
+    },
+    # "embedder": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "model": "text-embedding-3-small"}},
+    "embedder": {
+        "provider": "ollama",
+        "config": {
+            "model": "nomic-embed-text:latest",
+            "ollama_base_url": "http://ollama:11434",
+            "embedding_dims": 768,
+        }
+    },
     "history_db_path": HISTORY_DB_PATH,
 }
 

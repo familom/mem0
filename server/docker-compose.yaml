@@ -24,6 +24,28 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1  # Prevents Python from writing .pyc files
       - PYTHONUNBUFFERED=1  # Ensures Python output is sent straight to terminal
+ 
+  ollama:
+    build:
+      context: ..
+      dockerfile: server/ollama.Dockerfile
+    volumes:
+      - /usr/share/ollama/.ollama:/root/.ollama # Use host's storage for models
+    restart: unless-stopped
+    ports:
+      - 11435:11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_ORIGINS=*
+    networks:
+      - mem0_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   postgres:
       image: ankane/pgvector:v0.5.1
