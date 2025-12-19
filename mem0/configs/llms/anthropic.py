@@ -40,6 +40,13 @@ class AnthropicConfig(BaseLlmConfig):
             anthropic_base_url: Anthropic API base URL, defaults to None
         """
         # Initialize base parameters
+
+        # TODO(alexg): need to find a workaround
+        if model == "claude-sonnet-4-5-20250929":
+            # Claude Sonnet 4.5 doesn't support both temperature and top_p
+            # Search by "temperature` and `top_p` cannot both be specified for this model. Please use only one." error
+            top_p = None
+
         super().__init__(
             model=model,
             temperature=temperature,
