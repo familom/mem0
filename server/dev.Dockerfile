@@ -18,6 +18,7 @@ COPY README.md .
 COPY mem0 ./mem0
 RUN pip install -e ".[graph,vector_stores]"
 RUN pip install ollama
+RUN pip install anthropic
 
 # Return to app directory and copy server code
 WORKDIR /app
