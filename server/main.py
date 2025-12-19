@@ -61,6 +61,14 @@ DEFAULT_CONFIG = {
             "ollama_base_url": "http://ollama:11434"
         }
     },
+    # "llm": {
+    #     "provider": "anthropic",
+    #     "config": {
+    #         "model": "claude-sonnet-4-5-20250929",
+    #         "temperature": 0.0,
+    #         "max_tokens": 8192,
+    #     }
+    # },
     # "embedder": {"provider": "openai", "config": {"api_key": OPENAI_API_KEY, "model": "text-embedding-3-small"}},
     "embedder": {
         "provider": "ollama",
@@ -94,6 +102,7 @@ class MemoryCreate(BaseModel):
     agent_id: Optional[str] = None
     run_id: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
+    prompt: Optional[str] = None
 
 
 class SearchRequest(BaseModel):
@@ -119,6 +128,7 @@ def add_memory(memory_create: MemoryCreate):
         raise HTTPException(status_code=400, detail="At least one identifier (user_id, agent_id, run_id) is required.")
 
     params = {k: v for k, v in memory_create.model_dump().items() if v is not None and k != "messages"}
+    logging.debug(f"Adding memory with params: {params}")
     try:
         response = MEMORY_INSTANCE.add(messages=[m.model_dump() for m in memory_create.messages], **params)
         return JSONResponse(content=response)
